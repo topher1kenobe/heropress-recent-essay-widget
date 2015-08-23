@@ -38,6 +38,15 @@ class Heropress_Recent_Essays_Widget extends WP_Widget {
 	private $heropress_data_url = NULL;
 
 	/**
+	* Sets the number of items to be pulled from the remote end point
+	*
+	* @access public
+	* @since  1.0
+	* @var    object
+	*/
+	private $heropress_data_limit = NULL;
+
+	/**
 	* Holds the data retrieved from the remote server
 	*
 	* @access private
@@ -65,6 +74,8 @@ class Heropress_Recent_Essays_Widget extends WP_Widget {
 		// assign the data source URL
 		$this->heropress_data_url = 'http://heropress.com/essays/feed/';
 
+		$this->heropress_data_limit = 5;
+
 		// go get the data and store it in $this->heropress_data
 		$this->data_fetcher();
 
@@ -83,11 +94,15 @@ class Heropress_Recent_Essays_Widget extends WP_Widget {
 
 		$rss = fetch_feed( $this->heropress_data_url );
 
+		if ( $instance['heropress-essay-count'] != '' ) {
+			$this->heropress_data_limit = $instance['heropress-essay-count'];
+		}
+
 		// Checks that the object is created correctly
 		if ( ! is_wp_error( $rss ) ) {
 
 			// Figure out how many total items there are, but limit it to 5. 
-			$maxitems = $rss->get_item_quantity( 5 ); 
+			$maxitems = $rss->get_item_quantity( $this->heropress_data_limit ); 
 
 			// Build an array of all the items, starting with element 0 (first element).
 			$rss_items = $rss->get_items( 0, $maxitems );
@@ -195,12 +210,37 @@ class Heropress_Recent_Essays_Widget extends WP_Widget {
 			$title = '';
 		}
 
+		// check to see if we have a count, and if so, set it
+		if ( isset( $instance['heropress-essay-count'] ) ) {
+			$heropress_essay_count = $instance['heropress-essay-count'];
+		} else {
+			$heropress_essay_count = '';
+		}
+
 		// make the form for the title field in the admin
 		?>
 		<p>
 			<label for="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>"><?php _e( 'Title:', 'heropress-recent-essays-widget' ); ?></label>
 			<input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'title' ) ); ?>" type="text" value="<?php echo esc_attr( $title ); ?>">
 		</p>
+
+		<?php
+		// make the form for the count in the admin
+		?>
+		<p>
+			<label for="<?php echo esc_attr( $this->get_field_id( 'heropress-essay-count' ) ); ?>"><?php _e( 'Show how many:', 'heropress-recent-essays-widget' ); ?></label>
+            <select name="<?php echo esc_attr( $this->get_field_name( 'heropress-essay-count' ) ); ?>" id="<?php echo esc_attr( $this->get_field_id( 'heropress-essay-count' ) ); ?>" class="widefat">
+                <?php
+					$count = 1;
+					while ( $count <= 5 ) {
+                        echo '<option value="' . absint( $count ) . '" id="heropress-count-' . absint( $count ) . '"' . esc_attr( selected( $instance['heropress-essay-count'], $count ) ) .  '>' . absint( $count ) .  '</option>';
+						$count++;
+                    }
+                ?>
+            </select>
+
+		</p>
+
 		
 		<?php 
 	}
@@ -221,7 +261,8 @@ class Heropress_Recent_Essays_Widget extends WP_Widget {
 		$instance = $old_instance;
 
 		// set instance to hold new instance data
-		$instance['title'] = ( ! empty( $new_instance['title'] ) ) ? strip_tags( $new_instance['title'] ) : '';
+		$instance['title']                 = ( ! empty( $new_instance['title'] ) ) ? strip_tags( $new_instance['title'] ) : '';
+		$instance['heropress-essay-count'] = absint( $new_instance['heropress-essay-count'] );
 
 		return $instance;
 	}
