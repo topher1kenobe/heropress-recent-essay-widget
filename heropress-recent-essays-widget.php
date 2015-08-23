@@ -1,32 +1,32 @@
 <?php
 /*
-Plugin Name: Mission Network News Daily Headlines Widget
-Description: Creates a widget which shows the most recent daily news headlines from <a href="http://mnnonline.org">Mission Network News</a>.
+Plugin Name: HeroPress Recent Essays Widget
+Description: Creates a widget which shows the recent essays from <a href="http://heropress.com">HeroPress.com</a>.
 Author: Topher
 Author URI: http://topher1kenobe.com
-Version: 1.0
-Text Domain: mnn-headlines-widget
+version: 1.0
+Text Domain: heropress-recent-essays-widget
 License: GPL
 */
 
 /**
- * Provides a WordPress widget that renders recent daily headline from Mission Network News
+ * Provides a WordPress widget that renders recent essay from HeroPress.com
  *
- * @package MNN_Headlines_Widget
- * @since   MNN_Headlines_Widget 1.0
+ * @package Heropress_Recent_Essays_Widget
+ * @since   Heropress_Recent_Essays_Widget 1.0
  * @author  Topher
  */
 
 /**
- * Adds MNN_Headlines_Widget widget.
+ * Adds Heropress_Recent_Essays_Widget widget.
  *
- * @class   MNN_Headlines_Widget
+ * @class   Heropress_Recent_Essays_Widget
  * @version 1.0.0
  * @since   1.0
- * @package MNN_Headlines_Widget
+ * @package Heropress_Recent_Essays_Widget
  * @author  Topher
  */
-class MNN_Headlines_Widget extends WP_Widget {
+class Heropress_Recent_Essays_Widget extends WP_Widget {
 
 	/**
 	* Holds the source URL for the data
@@ -35,7 +35,7 @@ class MNN_Headlines_Widget extends WP_Widget {
 	* @since  1.0
 	* @var    string
 	*/
-	private $mnn_data_url = NULL;
+	private $heropress_data_url = NULL;
 
 	/**
 	* Holds the data retrieved from the remote server
@@ -44,10 +44,10 @@ class MNN_Headlines_Widget extends WP_Widget {
 	* @since  1.0
 	* @var    object
 	*/
-	private $mnn_data = NULL;
+	private $heropress_data = NULL;
 
 	/**
-	* MNN_Headlines_Widget Constructor, sets up Widget, gets data
+	* Heropress_Recent_Essays_Widget Constructor, sets up Widget, gets data
 	*
 	* @access public
 	* @since  1.0
@@ -57,15 +57,15 @@ class MNN_Headlines_Widget extends WP_Widget {
 
 		//  Build out the widget details
 		parent::__construct(
-			'mnn-headlines-widget',
-			__( 'MNN Daily Headlines', 'mnn-headlines-widget' ),
-			array( 'description' => __( 'Renders the most recent daily news headlines from Mission Network News.', 'mnn-headlines-widget' ), )
+			'heropress-recent-essays-widget',
+			__( 'HeroPress Most Recent Essay', 'heropress-recent-essays-widget' ),
+			array( 'description' => __( 'Renders recent essays from HeroPress.com.', 'heropress-recent-essays-widget' ), )
 		);
 
 		// assign the data source URL
-		$this->mnn_data_url = 'http://mnnonline.org/rss/daily.rss';
+		$this->heropress_data_url = 'http://heropress.com/essays/feed/';
 
-		// go get the data and store it in $this->mnn_data
+		// go get the data and store it in $this->heropress_data
 		$this->data_fetcher();
 
 	}
@@ -81,7 +81,7 @@ class MNN_Headlines_Widget extends WP_Widget {
 	*/
 	private function data_fetcher() {
 
-		$rss = fetch_feed( $this->mnn_data_url );
+		$rss = fetch_feed( $this->heropress_data_url );
 
 		// Checks that the object is created correctly
 		if ( ! is_wp_error( $rss ) ) {
@@ -95,14 +95,14 @@ class MNN_Headlines_Widget extends WP_Widget {
 		}
 
 		// store the data in an attribute
-		$this->mnn_data = $rss_items;
+		$this->heropress_data = $rss_items;
 
 	}
 
 	/**
 	* Data render
 	*
-	* Parse the data in $this->mnn_data and turn it into HTML for front end rendering
+	* Parse the data in $this->heropress_data and turn it into HTML for front end rendering
 	*
 	* @access private
 	* @since  1.0
@@ -114,13 +114,13 @@ class MNN_Headlines_Widget extends WP_Widget {
 		$output = '';
 
 		// see if we have data
-		if ( 0 < count( $this->mnn_data ) ) {
+		if ( 0 < count( $this->heropress_data ) ) {
 
 			// start an unordered list
 			$output .= '<ul>' . "\n";
 
 			// Loop through each feed item and display each item as a hyperlink.
-			foreach ( $this->mnn_data as $item ) {
+			foreach ( $this->heropress_data as $item ) {
 
 				$output .= '<li>' . "\n";
 
@@ -128,7 +128,7 @@ class MNN_Headlines_Widget extends WP_Widget {
 					$output .= '<a href="' . esc_url( $item->get_permalink() ) . '"' . "\n";
 
 						// make the title attribute in the link
-						$output .= 'title="' . sprintf( __( 'Posted %s', 'mnn-headlines-widget' ), $item->get_date( 'j F Y' ) ) . '">' . "\n";
+						$output .= 'title="' . sprintf( __( 'Posted %s', 'heropress-recent-essays-widget' ), $item->get_date( 'j F Y' ) ) . '">' . "\n";
 
 						// print the news headline
 						$output .= esc_html( $item->get_title() ) . "\n";
@@ -198,7 +198,7 @@ class MNN_Headlines_Widget extends WP_Widget {
 		// make the form for the title field in the admin
 		?>
 		<p>
-			<label for="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>"><?php _e( 'Title:', 'mnn-headlines-widget' ); ?></label>
+			<label for="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>"><?php _e( 'Title:', 'heropress-recent-essays-widget' ); ?></label>
 			<input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'title' ) ); ?>" type="text" value="<?php echo esc_attr( $title ); ?>">
 		</p>
 		
@@ -226,11 +226,11 @@ class MNN_Headlines_Widget extends WP_Widget {
 		return $instance;
 	}
 
-} // class MNN_Headlines_Widget
+} // class Heropress_Recent_Essays_Widget
 
 
-// register MNN_Headlines_Widget widget
-function register_mnn_headlines_wordpress_widget() {
-	register_widget( 'MNN_Headlines_Widget' );
+// register Heropress_Recent_Essays_Widget widget
+function register_heropress_recent_essays_widget() {
+	register_widget( 'Heropress_Recent_Essays_Widget' );
 }
-add_action( 'widgets_init', 'register_mnn_headlines_wordpress_widget' );
+add_action( 'widgets_init', 'register_heropress_recent_essays_widget' );
