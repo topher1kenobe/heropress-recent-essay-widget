@@ -9,6 +9,12 @@ Text Domain: heropress-recent-essays-widget
 License: GPL
 */
 
+function return_1( $seconds ) {
+	return 1;
+}
+
+add_filter( 'wp_feed_cache_transient_lifetime' , 'return_1' );
+
 /**
  * Provides a WordPress widget that renders recent essay from HeroPress.com
  *
@@ -76,8 +82,6 @@ class Heropress_Recent_Essays_Widget extends WP_Widget {
 
 		$this->heropress_data_limit = 5;
 
-		// go get the data and store it in $this->heropress_data
-		$this->data_fetcher();
 
 	}
 
@@ -90,7 +94,7 @@ class Heropress_Recent_Essays_Widget extends WP_Widget {
 	* @since  1.0
 	* @return void
 	*/
-	private function data_fetcher() {
+	private function data_fetcher( $instance ) {
 
 		$rss = fetch_feed( $this->heropress_data_url );
 
@@ -102,7 +106,7 @@ class Heropress_Recent_Essays_Widget extends WP_Widget {
 		if ( ! is_wp_error( $rss ) ) {
 
 			// Figure out how many total items there are, but limit it to 5. 
-			$maxitems = $rss->get_item_quantity( $this->heropress_data_limit ); 
+			$maxitems = $rss->get_item_quantity( absint( $this->heropress_data_limit ) ); 
 
 			// Build an array of all the items, starting with element 0 (first element).
 			$rss_items = $rss->get_items( 0, $maxitems );
@@ -123,7 +127,10 @@ class Heropress_Recent_Essays_Widget extends WP_Widget {
 	* @since  1.0
 	* @return string
 	*/
-	private function data_render() {
+	private function data_render( $instance = '' ) {
+
+		// go get the data and store it in $this->heropress_data
+		$this->data_fetcher( $instance );
 
 		// instantiate $output
 		$output = '';
@@ -138,6 +145,10 @@ class Heropress_Recent_Essays_Widget extends WP_Widget {
 			foreach ( $this->heropress_data as $item ) {
 
 				$output .= '<li>' . "\n";
+
+					if ( $enclosure = $item->get_enclosure() ) {
+						$output .= '<img src="' . esc_url( $enclosure->get_link() ) . '">' . "\n";
+					}
 
 					// start the link
 					$output .= '<a href="' . esc_url( $item->get_permalink() ) . '"' . "\n";
@@ -178,8 +189,9 @@ class Heropress_Recent_Essays_Widget extends WP_Widget {
 		// filter the title
 		$title	= apply_filters( 'widget_title', $instance['title'] );
 
+
 		// go get the news
-		$output .= $this->data_render();
+		$output .= $this->data_render( $instance );
 
 		// echo the widget title
 		echo wp_kses_post( $args['before_widget'] );
