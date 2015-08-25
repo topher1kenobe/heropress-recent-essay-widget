@@ -287,23 +287,23 @@ class Heropress_Recent_Essays_Widget extends WP_Widget {
 			}
 		?>
 
-		<h4>Show:</h4>
+		<h4><?php _e( 'Show', 'heropress-recent-essays-widget' ); ?>:</h4>
 		<ul>
 			<li>
 				<input id="<?php echo $this->get_field_id( 'heropress-show-banner' ); ?>" name="<?php echo $this->get_field_name( 'heropress-show-banner' ); ?>" type="checkbox" value="1" <?php checked( '1', $instance['heropress-show-banner'], true ); ?>>
-				<label for="<?php echo $this->get_field_id( 'heropress-show-banner' ); ?>"> Image</label>
+				<label for="<?php echo $this->get_field_id( 'heropress-show-banner' ); ?>"> <?php _e( 'Image', 'heropress-recent-essays-widget' ); ?></label>
 			</li>
 			<li>
 				<input id="<?php echo $this->get_field_id( 'heropress-show-title' ); ?>" name="<?php echo $this->get_field_name( 'heropress-show-title' ); ?>" type="checkbox" value="1" <?php checked( '1', $instance['heropress-show-title'], true ); ?>>
-				<label for="<?php echo $this->get_field_id( 'heropress-show-title' ); ?>"> Title</label>
+				<label for="<?php echo $this->get_field_id( 'heropress-show-title' ); ?>"> <?php _e( 'Title', 'heropress-recent-essays-widget' ); ?></label>
 			</li>
 			<li>
 				<input id="<?php echo $this->get_field_id( 'heropress-show-author' ); ?>" name="<?php echo $this->get_field_name( 'heropress-show-author' ); ?>" type="checkbox" value="1" <?php checked( '1', $instance['heropress-show-author'], true ); ?>>
-				<label for="<?php echo $this->get_field_id( 'heropress-show-author' ); ?>"> Author</label>
+				<label for="<?php echo $this->get_field_id( 'heropress-show-author' ); ?>"> <?php _e( 'Author', 'heropress-recent-essays-widget' ); ?></label>
 			</li>
 			<li>
 				<input id="<?php echo $this->get_field_id( 'heropress-show-pubdate' ); ?>" name="<?php echo $this->get_field_name( 'heropress-show-pubdate' ); ?>" type="checkbox" value="1" <?php checked( '1', $instance['heropress-show-pubdate'], true ); ?>>
-				<label for="<?php echo $this->get_field_id( 'heropress-show-pubdate' ); ?>"> Publish Date</label>
+				<label for="<?php echo $this->get_field_id( 'heropress-show-pubdate' ); ?>"> <?php _e( 'Publish Date', 'heropress-recent-essays-widget' ); ?></label>
 			</li>
 
 		</ul>
