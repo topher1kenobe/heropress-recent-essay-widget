@@ -41,7 +41,7 @@ class Heropress_Recent_Essays_Widget extends WP_Widget {
 	* @since  1.0
 	* @var    string
 	*/
-	private $heropress_data_url = NULL;
+	private $heropress_data_url = null;
 
 	/**
 	* Sets the number of items to be pulled from the remote end point
@@ -50,7 +50,7 @@ class Heropress_Recent_Essays_Widget extends WP_Widget {
 	* @since  1.0
 	* @var    object
 	*/
-	private $heropress_data_limit = NULL;
+	private $heropress_data_limit = null;
 
 	/**
 	* Holds the data retrieved from the remote server
@@ -59,7 +59,7 @@ class Heropress_Recent_Essays_Widget extends WP_Widget {
 	* @since  1.0
 	* @var    object
 	*/
-	private $heropress_data = NULL;
+	private $heropress_data = null;
 
 	/**
 	* Heropress_Recent_Essays_Widget Constructor, sets up Widget, gets data
@@ -81,7 +81,6 @@ class Heropress_Recent_Essays_Widget extends WP_Widget {
 		$this->heropress_data_url = 'http://heropress.com/essays/feed/';
 
 		$this->heropress_data_limit = 5;
-
 
 	}
 
@@ -105,8 +104,8 @@ class Heropress_Recent_Essays_Widget extends WP_Widget {
 		// Checks that the object is created correctly
 		if ( ! is_wp_error( $rss ) ) {
 
-			// Figure out how many total items there are, but limit it to 5. 
-			$maxitems = $rss->get_item_quantity( absint( $this->heropress_data_limit ) ); 
+			// Figure out how many total items there are, but limit it to 5.
+			$maxitems = $rss->get_item_quantity( absint( $this->heropress_data_limit ) );
 
 			// Build an array of all the items, starting with element 0 (first element).
 			$rss_items = $rss->get_items( 0, $maxitems );
@@ -144,23 +143,40 @@ class Heropress_Recent_Essays_Widget extends WP_Widget {
 			// Loop through each feed item and display each item as a hyperlink.
 			foreach ( $this->heropress_data as $item ) {
 
+				$author = $item->get_authors();
+
 				$output .= '<li>' . "\n";
 
-					if ( $enclosure = $item->get_enclosure() ) {
-						$output .= '<img src="' . esc_url( $enclosure->get_link() ) . '">' . "\n";
-					}
+				$enclosure = $item->get_enclosure();
 
+				if ( $enclosure != '' && $instance['heropress-show-banner'] == 1 ) {
 					// start the link
-					$output .= '<a href="' . esc_url( $item->get_permalink() ) . '"' . "\n";
+					$output .= '<a class="heropress_essay_title" href="' . esc_url( $item->get_permalink() ) . '">';
 
-						// make the title attribute in the link
-						$output .= 'title="' . sprintf( __( 'Posted %s', 'heropress-recent-essays-widget' ), $item->get_date( 'j F Y' ) ) . '">' . "\n";
-
-						// print the news headline
-						$output .= esc_html( $item->get_title() ) . "\n";
+					$output .= '<img src="' . esc_url( $enclosure->get_link() ) . '">' . "\n";
 
 					// end the link
 					$output .= '</a>' . "\n";
+				}
+
+				if ( $instance['heropress-show-title'] == 1 ) {
+					// start the link
+					$output .= '<a class="heropress_essay_title" href="' . esc_url( $item->get_permalink() ) . '">';
+
+					// print the news headline
+					$output .= esc_html( $item->get_title() ) . "\n";
+
+					// end the link
+					$output .= '</a>' . "\n";
+				}
+
+				if ( $instance['heropress-show-author'] == 1 ) {
+					$output .= '<div class="heropress_contributor">' . $author[0]->name . '</div>';
+				}
+
+				if ( $instance['heropress-show-pubdate'] == 1 ) {
+					$output .= '<div class="heropress_essay_pubdate"><span class="heropress_essay_pubdate_prefix">' . __( 'Posted', 'heropress-recent-essays-widget' ) . '</span> ' . $item->get_date( 'j F Y' ) . '</div>' . "\n";
+				}
 
 				$output .= '</li>' . "\n";
 
@@ -188,7 +204,6 @@ class Heropress_Recent_Essays_Widget extends WP_Widget {
 
 		// filter the title
 		$title	= apply_filters( 'widget_title', $instance['title'] );
-
 
 		// go get the news
 		$output .= $this->data_render( $instance );
@@ -242,19 +257,39 @@ class Heropress_Recent_Essays_Widget extends WP_Widget {
 		<p>
 			<label for="<?php echo esc_attr( $this->get_field_id( 'heropress-essay-count' ) ); ?>"><?php _e( 'Show how many:', 'heropress-recent-essays-widget' ); ?></label>
             <select name="<?php echo esc_attr( $this->get_field_name( 'heropress-essay-count' ) ); ?>" id="<?php echo esc_attr( $this->get_field_id( 'heropress-essay-count' ) ); ?>" class="widefat">
-                <?php
-					$count = 1;
-					while ( $count <= 5 ) {
-                        echo '<option value="' . absint( $count ) . '" id="heropress-count-' . absint( $count ) . '"' . esc_attr( selected( $instance['heropress-essay-count'], $count ) ) .  '>' . absint( $count ) .  '</option>';
-						$count++;
-                    }
-                ?>
+				<?php
+				$count = 1;
+				while ( $count <= 5 ) {
+					echo '<option value="' . absint( $count ) . '" id="heropress-count-' . absint( $count ) . '"' . esc_attr( selected( $instance['heropress-essay-count'], $count ) ) .  '>' . absint( $count ) .  '</option>';
+					$count++;
+				}
+				?>
             </select>
 
 		</p>
 
+		<h4>Show:</h4>
+		<ul>
+			<li>
+				<input id="<?php echo $this->get_field_id( 'heropress-show-banner' ); ?>" name="<?php echo $this->get_field_name( 'heropress-show-banner' ); ?>" type="checkbox" value="1" <?php checked( '1', $instance['heropress-show-banner'], true ); ?>>
+				<label for="<?php echo $this->get_field_id( 'heropress-show-banner' ); ?>"> Image</label>
+			</li>
+			<li>
+				<input id="<?php echo $this->get_field_id( 'heropress-show-title' ); ?>" name="<?php echo $this->get_field_name( 'heropress-show-title' ); ?>" type="checkbox" value="1" <?php checked( '1', $instance['heropress-show-title'], true ); ?>>
+				<label for="<?php echo $this->get_field_id( 'heropress-show-title' ); ?>"> Title</label>
+			</li>
+			<li>
+				<input id="<?php echo $this->get_field_id( 'heropress-show-author' ); ?>" name="<?php echo $this->get_field_name( 'heropress-show-author' ); ?>" type="checkbox" value="1" <?php checked( '1', $instance['heropress-show-author'], true ); ?>>
+				<label for="<?php echo $this->get_field_id( 'heropress-show-author' ); ?>"> Author</label>
+			</li>
+			<li>
+				<input id="<?php echo $this->get_field_id( 'heropress-show-pubdate' ); ?>" name="<?php echo $this->get_field_name( 'heropress-show-pubdate' ); ?>" type="checkbox" value="1" <?php checked( '1', $instance['heropress-show-pubdate'], true ); ?>>
+				<label for="<?php echo $this->get_field_id( 'heropress-show-pubdate' ); ?>"> Publish Date</label>
+			</li>
+
+		</ul>
 		
-		<?php 
+		<?php
 	}
 
 	/**
@@ -273,8 +308,12 @@ class Heropress_Recent_Essays_Widget extends WP_Widget {
 		$instance = $old_instance;
 
 		// set instance to hold new instance data
-		$instance['title']                 = ( ! empty( $new_instance['title'] ) ) ? strip_tags( $new_instance['title'] ) : '';
-		$instance['heropress-essay-count'] = absint( $new_instance['heropress-essay-count'] );
+		$instance['title']                  = ( ! empty( $new_instance['title'] ) ) ? strip_tags( $new_instance['title'] ) : '';
+		$instance['heropress-essay-count']  = absint( $new_instance['heropress-essay-count'] );
+		$instance['heropress-show-banner']  = absint( $new_instance['heropress-show-banner'] );
+		$instance['heropress-show-title']   = absint( $new_instance['heropress-show-title'] );
+		$instance['heropress-show-author']  = absint( $new_instance['heropress-show-author'] );
+		$instance['heropress-show-pubdate'] = absint( $new_instance['heropress-show-pubdate'] );
 
 		return $instance;
 	}
