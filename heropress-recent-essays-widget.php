@@ -268,6 +268,25 @@ class Heropress_Recent_Essays_Widget extends WP_Widget {
 
 		</p>
 
+		<?php
+			// set up some defaults
+			if ( $instance['heropress-show-banner'] == '' ) {
+				$instance['heropress-show-banner'] = 1;
+			}
+
+			if ( $instance['heropress-show-title'] == '' ) {
+				$instance['heropress-show-title'] = 1;
+			}
+
+			if ( $instance['heropress-show-author'] == '' ) {
+				$instance['heropress-show-author'] = 1;
+			}
+
+			if ( $instance['heropress-show-pubdate'] == '' ) {
+				$instance['heropress-show-pubdate'] = 1;
+			}
+		?>
+
 		<h4>Show:</h4>
 		<ul>
 			<li>
