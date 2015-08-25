@@ -21,7 +21,9 @@ Creates a widget showing the most recent essay data from HeroPress.  Optionally 
 
 == Screenshots ==
 
-1. Most recent essay showing in a widget
+1. Admin area for the widget area.
+
+1. 2 most recent essaays showing in a widget
 
 == Usage ==
 
