@@ -7,11 +7,11 @@ Stable tag: 1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Creates a widget showing the most recent essay data from HeroPress.  Renders featured image, title, contributor, and date.
+Creates a widget showing the most recent essay data from HeroPress.  Optionally renders featured image, title, contributor, and date.
 
 == Description ==
 
-Creates a widget showing the most recent essay data from HeroPress.  Renders featured image, title, contributor, and date.
+Creates a widget showing the most recent essay data from HeroPress.  Optionally renders featured image, title, contributor, and date.
 
 == Installation ==
 
