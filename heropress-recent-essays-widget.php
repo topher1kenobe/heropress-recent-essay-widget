@@ -4,16 +4,10 @@ Plugin Name: HeroPress Recent Essays Widget
 Description: Creates a widget which shows the recent essays from <a href="http://heropress.com">HeroPress.com</a>.
 Author: Topher
 Author URI: http://topher1kenobe.com
-version: 1.0
+Version: 1.1
 Text Domain: heropress-recent-essays-widget
 License: GPL
 */
-
-function return_1( $seconds ) {
-	return 1;
-}
-
-add_filter( 'wp_feed_cache_transient_lifetime' , 'return_1' );
 
 /**
  * Provides a WordPress widget that renders recent essay from HeroPress.com

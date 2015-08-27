@@ -7,7 +7,7 @@ Creates a widget showing the most recent essay data from HeroPress.  Optionally 
 **Tags:** [widget](http://wordpress.org/plugins/tags/widget)  
 **Requires at least:** 3.0  
 **Tested up to:** 4.3  
-**Stable tag:** 1.0  
+**Stable tag:** 1.1
 **License:** [GPLv2 or later](http://www.gnu.org/licenses/gpl-2.0.html)  
 
 ## Description ##
@@ -22,6 +22,9 @@ Creates a widget showing the most recent essay data from HeroPress.  Optionally 
 
 ## Screenshots ##
 
+1. Admin area for the widget area.
+
+1. 2 most recent essaays showing in a widget
 
 ## Usage ##
 
@@ -34,4 +37,6 @@ The data fetcher caches the data for 12 hours.
 ### 1.0 ###
 * Initial release
 
+### 1.1 ###
+* Remove crazy cache limiter
 

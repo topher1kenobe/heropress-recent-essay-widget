@@ -3,7 +3,7 @@ Contributors: topher1kenobe
 Tags: widget
 Requires at least: 3.0
 Tested up to: 4.3
-Stable tag: 1.0
+Stable tag: 1.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -35,3 +35,6 @@ The data fetcher caches the data for 12 hours.
 
 = 1.0 =
 * Initial release
+
+= 1.1 =
+* Remove crazy cache limiter
